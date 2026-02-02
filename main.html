@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="Sistema de Gerenciamento de Rifas - Agape Church">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkFnYXBlIENodXJjaCBSaWZhcyIsCiAgInNob3J0X25hbWUiOiAiUmlmYXMiLAogICJzdGFydF91cmwiOiAiLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2ZmZmZmZiIsCiAgInRoZW1lX2NvbG9yIjogIiMwMDAwMDAiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWwsJTNDc3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgd2lkdGg9JzE5MicgaGVpZ2h0PScxOTInJTNFJTNDcmVjdCB3aWR0aD0nMTkyJyBoZWlnaHQ9JzE5MicgZmlsbD0nJTIzMDAwJy8lM0UlM0N0ZXh0IHg9JzUwJTI1JyB5PSc1MCUyNScgZm9udC1zaXplPSc5MCcgZmlsbD0nJTIzZmZmJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBkb21pbmFudC1iYXNlbGluZT0nbWlkZGxlJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZiclM0VBJTNDL3RleHQlM0UlM0Mvc3ZnJTNFIiwKICAgICAgInNpemVzIjogIjE5MngxOTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='192'%3E%3Crect width='192' height='192' fill='%23000'/%3E%3Ctext x='50%25' y='50%25' font-size='90' fill='%23fff' text-anchor='middle' dominant-baseline='middle' font-family='sans-serif'%3EA%3C/text%3E%3C/svg%3E">
+    <title>Agape Church - Rifas</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Archivo:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --gray: #666666;
+            --light-gray: #e0e0e0;
+            --green: #00ff00;
+            --red: #ff0000;
+            --green-dark: #00cc00;
+            --red-dark: #cc0000;
+        }
+
+        body {
+            font-family: 'Archivo', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--white);
+            color: var(--black);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            background: var(--black);
+            color: var(--white);
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 4px solid var(--black);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .user-info {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid var(--white);
+            color: var(--white);
+            padding: 0.3rem 0.8rem;
+            margin-left: 0.5rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            border-radius: 2px;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: var(--white);
+            color: var(--black);
+        }
+
+        /* Login Screen */
+        .login-screen {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+        }
+
+        .login-box {
+            background: var(--white);
+            padding: 2.5rem;
+            border: 3px solid var(--black);
+            box-shadow: 8px 8px 0 var(--black);
+            max-width: 400px;
+            width: 100%;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-box h2 {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .login-box p {
+            color: var(--gray);
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--black);
+            background: var(--white);
+            font-size: 1rem;
+            font-family: 'Archivo', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            box-shadow: 4px 4px 0 var(--black);
+            transform: translate(-2px, -2px);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--black);
+            color: var(--white);
+            border: none;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            font-family: 'Space Mono', monospace;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0 var(--black);
+            background: var(--gray);
+        }
+
+        .btn:active {
+            transform: translate(0, 0);
+            box-shadow: none;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 1.5rem;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 3px solid var(--black);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .nav-tab {
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -3px;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .nav-tab.active {
+            border-bottom-color: var(--black);
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: var(--light-gray);
+        }
+
+        /* Numbers Grid */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--black);
+            color: var(--white);
+            padding: 1rem;
+            text-align: center;
+            border: 3px solid var(--black);
+        }
+
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .stat-card .label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.8;
+        }
+
+        .numbers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .number-btn {
+            aspect-ratio: 1;
+            border: 2px solid var(--black);
+            background: var(--green);
+            color: var(--black);
+            font-size: 1.2rem;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .number-btn:hover:not(.sold) {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .number-btn.sold {
+            background: var(--red);
+            color: var(--white);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .number-btn:active:not(.sold) {
+            transform: scale(0.95);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+            animation: fadeIn 0.2s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal {
+            background: var(--white);
+            padding: 2rem;
+            border: 3px solid var(--black);
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal h3 {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--black);
+            color: var(--black);
+        }
+
+        .btn-secondary:hover {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        /* Sales List */
+        .sales-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .sale-card {
+            border: 2px solid var(--black);
+            padding: 1rem;
+            background: var(--white);
+            transition: all 0.2s;
+        }
+
+        .sale-card:hover {
+            box-shadow: 4px 4px 0 var(--black);
+            transform: translate(-2px, -2px);
+        }
+
+        .sale-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .sale-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .sale-date {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .sale-details {
+            display: grid;
+            gap: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        .sale-detail {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .sale-detail strong {
+            min-width: 120px;
+            font-weight: 600;
+        }
+
+        /* Report */
+        .report-table {
+            border: 2px solid var(--black);
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .report-table th,
+        .report-table td {
+            border: 2px solid var(--black);
+            padding: 0.8rem;
+            text-align: left;
+        }
+
+        .report-table th {
+            background: var(--black);
+            color: var(--white);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        .report-table tr:nth-child(even) {
+            background: #f5f5f5;
+        }
+
+        .report-table tr:hover {
+            background: var(--light-gray);
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: var(--gray);
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(3, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        /* Error */
+        .error {
+            background: var(--red);
+            color: var(--white);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 2px solid var(--red-dark);
+            font-weight: 600;
+        }
+
+        .success {
+            background: var(--green);
+            color: var(--black);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 2px solid var(--green-dark);
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .numbers-grid {
+                grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+                gap: 0.3rem;
+            }
+
+            .number-btn {
+                font-size: 1rem;
+            }
+
+            .login-box {
+                padding: 1.5rem;
+            }
+
+            .modal {
+                padding: 1.5rem;
+            }
+
+            .stat-card .number {
+                font-size: 1.5rem;
+            }
+        }
+
+        select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--black);
+            background: var(--white);
+            font-size: 1rem;
+            font-family: 'Archivo', sans-serif;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            box-shadow: 4px 4px 0 var(--black);
+            transform: translate(-2px, -2px);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // ============================================
+        // SUPABASE CONFIGURATION
+        // ============================================
+        // IMPORTANT: Replace with your Supabase credentials
+        const SUPABASE_URL = 'https://rzjljpwxjvfaihudidoq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ6amxqcHd4anZmYWlodWRpZG9xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwNjIzMDksImV4cCI6MjA4NTYzODMwOX0.BnuVZtMw7RydoBLX_9-QnYQfogQAiSkeqbhtR7Y2T_c';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ============================================
+        // DATABASE FUNCTIONS
+        // ============================================
+        
+        // Initialize database - create numbers 1-300 if not exist
+        async function initializeDatabase() {
+            // Check if numbers exist
+            const { data: existingNumbers } = await supabase
+                .from('numbers')
+                .select('id')
+                .limit(1);
+
+            if (!existingNumbers || existingNumbers.length === 0) {
+                // Create numbers 1-300
+                const numbers = Array.from({ length: 300 }, (_, i) => ({
+                    numero: i + 1,
+                    vendido: false
+                }));
+
+                const { error } = await supabase
+                    .from('numbers')
+                    .insert(numbers);
+
+                if (error) {
+                    console.error('Error initializing numbers:', error);
+                }
+            }
+        }
+
+        // Get or create user by phone
+        async function getOrCreateUser(telefone, nome) {
+            // Try to find existing user
+            let { data: user, error } = await supabase
+                .from('users')
+                .select('*')
+                .eq('telefone', telefone)
+                .single();
+
+            if (error && error.code !== 'PGRST116') {
+                throw error;
+            }
+
+            // Create user if doesn't exist
+            if (!user) {
+                const { data: newUser, error: createError } = await supabase
+                    .from('users')
+                    .insert([{ telefone, nome }])
+                    .select()
+                    .single();
+
+                if (createError) throw createError;
+                user = newUser;
+            }
+
+            return user;
+        }
+
+        // Get all numbers with their status
+        async function getNumbers() {
+            const { data, error } = await supabase
+                .from('numbers')
+                .select('*')
+                .order('numero');
+
+            if (error) throw error;
+            return data;
+        }
+
+        // Sell a number
+        async function sellNumber(numberData) {
+            const { data, error } = await supabase
+                .from('sales')
+                .insert([numberData])
+                .select();
+
+            if (error) throw error;
+
+            // Mark number as sold
+            const { error: updateError } = await supabase
+                .from('numbers')
+                .update({ vendido: true })
+                .eq('id', numberData.number_id);
+
+            if (updateError) throw updateError;
+
+            return data;
+        }
+
+        // Get sales by seller
+        async function getSalesBySeller(userId) {
+            const { data, error } = await supabase
+                .from('sales')
+                .select(`
+                    *,
+                    numbers (numero),
+                    users (nome)
+                `)
+                .eq('user_id', userId)
+                .order('data_hora', { ascending: false });
+
+            if (error) throw error;
+            return data;
+        }
+
+        // Get all sales
+        async function getAllSales() {
+            const { data, error } = await supabase
+                .from('sales')
+                .select(`
+                    *,
+                    numbers (numero),
+                    users (nome, telefone)
+                `)
+                .order('data_hora', { ascending: false });
+
+            if (error) throw error;
+            return data;
+        }
+
+        // Get sales report by seller
+        async function getSalesReport() {
+            const { data, error } = await supabase
+                .from('sales')
+                .select(`
+                    user_id,
+                    users (nome, telefone)
+                `);
+
+            if (error) throw error;
+
+            // Group by user
+            const report = {};
+            data.forEach(sale => {
+                const userId = sale.user_id;
+                if (!report[userId]) {
+                    report[userId] = {
+                        nome: sale.users.nome,
+                        telefone: sale.users.telefone,
+                        total: 0
+                    };
+                }
+                report[userId].total += 1;
+            });
+
+            return Object.values(report);
+        }
+
+        // ============================================
+        // COMPONENTS
+        // ============================================
+
+        function App() {
+            const [user, setUser] = useState(null);
+            const [loading, setLoading] = useState(true);
+
+            useEffect(() => {
+                // Check if user is logged in (using localStorage)
+                const storedUser = localStorage.getItem('raffle_user');
+                if (storedUser) {
+                    setUser(JSON.parse(storedUser));
+                }
+                setLoading(false);
+
+                // Initialize database
+                initializeDatabase();
+            }, []);
+
+            const handleLogin = (userData) => {
+                setUser(userData);
+                localStorage.setItem('raffle_user', JSON.stringify(userData));
+            };
+
+            const handleLogout = () => {
+                setUser(null);
+                localStorage.removeItem('raffle_user');
+            };
+
+            if (loading) {
+                return (
+                    <div className="app">
+                        <div className="loading">Carregando</div>
+                    </div>
+                );
+            }
+
+            if (!user) {
+                return (
+                    <div className="app">
+                        <LoginScreen onLogin={handleLogin} />
+                    </div>
+                );
+            }
+
+            return (
+                <div className="app">
+                    <Header user={user} onLogout={handleLogout} />
+                    <MainScreen user={user} />
+                </div>
+            );
+        }
+
+        function Header({ user, onLogout }) {
+            return (
+                <div className="header">
+                    <h1>Agape Church</h1>
+                    {user && (
+                        <div className="user-info">
+                            {user.nome} ({user.telefone})
+                            <button className="logout-btn" onClick={onLogout}>
+                                Sair
+                            </button>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        function LoginScreen({ onLogin }) {
+            const [telefone, setTelefone] = useState('');
+            const [nome, setNome] = useState('');
+            const [loading, setLoading] = useState(false);
+            const [error, setError] = useState('');
+            const [needsName, setNeedsName] = useState(false);
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setError('');
+
+                if (!telefone) {
+                    setError('Por favor, digite seu telefone');
+                    return;
+                }
+
+                setLoading(true);
+
+                try {
+                    // Check if user exists
+                    const { data: existingUser } = await supabase
+                        .from('users')
+                        .select('*')
+                        .eq('telefone', telefone)
+                        .single();
+
+                    if (existingUser) {
+                        // User exists, login
+                        onLogin(existingUser);
+                    } else {
+                        // New user, need name
+                        if (!nome) {
+                            setNeedsName(true);
+                            setLoading(false);
+                            return;
+                        }
+
+                        // Create new user
+                        const user = await getOrCreateUser(telefone, nome);
+                        onLogin(user);
+                    }
+                } catch (err) {
+                    setError('Erro ao fazer login. Tente novamente.');
+                    console.error(err);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            return (
+                <div className="login-screen">
+                    <div className="login-box">
+                        <h2>Rifas</h2>
+                        <p>Sistema de Gerenciamento de Rifas</p>
+                        {error && <div className="error">{error}</div>}
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-group">
+                                <label>Telefone</label>
+                                <input
+                                    type="tel"
+                                    value={telefone}
+                                    onChange={(e) => setTelefone(e.target.value)}
+                                    placeholder="(00) 00000-0000"
+                                    disabled={loading}
+                                />
+                            </div>
+                            {needsName && (
+                                <div className="form-group">
+                                    <label>Nome</label>
+                                    <input
+                                        type="text"
+                                        value={nome}
+                                        onChange={(e) => setNome(e.target.value)}
+                                        placeholder="Seu nome completo"
+                                        disabled={loading}
+                                    />
+                                </div>
+                            )}
+                            <button type="submit" className="btn" disabled={loading}>
+                                {loading ? 'Entrando...' : 'Entrar'}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            );
+        }
+
+        function MainScreen({ user }) {
+            const [activeTab, setActiveTab] = useState('numbers');
+
+            return (
+                <div className="main-content">
+                    <nav className="nav-tabs">
+                        <button
+                            className={`nav-tab ${activeTab === 'numbers' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('numbers')}
+                        >
+                            Números
+                        </button>
+                        <button
+                            className={`nav-tab ${activeTab === 'my-sales' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('my-sales')}
+                        >
+                            Minhas Vendas
+                        </button>
+                        <button
+                            className={`nav-tab ${activeTab === 'report' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('report')}
+                        >
+                            Relatório Geral
+                        </button>
+                    </nav>
+
+                    {activeTab === 'numbers' && <NumbersGrid user={user} />}
+                    {activeTab === 'my-sales' && <MySales user={user} />}
+                    {activeTab === 'report' && <GeneralReport />}
+                </div>
+            );
+        }
+
+        function NumbersGrid({ user }) {
+            const [numbers, setNumbers] = useState([]);
+            const [loading, setLoading] = useState(true);
+            const [selectedNumber, setSelectedNumber] = useState(null);
+            const [error, setError] = useState('');
+            const [success, setSuccess] = useState('');
+
+            const loadNumbers = async () => {
+                try {
+                    const data = await getNumbers();
+                    setNumbers(data);
+                } catch (err) {
+                    setError('Erro ao carregar números');
+                    console.error(err);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            useEffect(() => {
+                loadNumbers();
+
+                // Subscribe to real-time changes
+                const subscription = supabase
+                    .channel('numbers-changes')
+                    .on('postgres_changes', 
+                        { event: '*', schema: 'public', table: 'numbers' },
+                        () => {
+                            loadNumbers();
+                        }
+                    )
+                    .subscribe();
+
+                return () => {
+                    subscription.unsubscribe();
+                };
+            }, []);
+
+            const handleNumberClick = (number) => {
+                if (!number.vendido) {
+                    setSelectedNumber(number);
+                }
+            };
+
+            const handleSale = async (saleData) => {
+                try {
+                    await sellNumber({
+                        ...saleData,
+                        number_id: selectedNumber.id,
+                        user_id: user.id,
+                        data_hora: new Date().toISOString()
+                    });
+                    setSuccess(`Número ${selectedNumber.numero} vendido com sucesso!`);
+                    setSelectedNumber(null);
+                    setTimeout(() => setSuccess(''), 3000);
+                    loadNumbers();
+                } catch (err) {
+                    setError('Erro ao vender número. Tente novamente.');
+                    console.error(err);
+                }
+            };
+
+            if (loading) {
+                return <div className="loading">Carregando números</div>;
+            }
+
+            const sold = numbers.filter(n => n.vendido).length;
+            const available = numbers.length - sold;
+
+            return (
+                <div>
+                    {error && <div className="error">{error}</div>}
+                    {success && <div className="success">{success}</div>}
+                    
+                    <div className="stats-bar">
+                        <div className="stat-card">
+                            <div className="number">{available}</div>
+                            <div className="label">Disponíveis</div>
+                        </div>
+                        <div className="stat-card">
+                            <div className="number">{sold}</div>
+                            <div className="label">Vendidos</div>
+                        </div>
+                    </div>
+
+                    <div className="numbers-grid">
+                        {numbers.map(number => (
+                            <button
+                                key={number.id}
+                                className={`number-btn ${number.vendido ? 'sold' : ''}`}
+                                onClick={() => handleNumberClick(number)}
+                                disabled={number.vendido}
+                            >
+                                {number.numero}
+                            </button>
+                        ))}
+                    </div>
+
+                    {selectedNumber && (
+                        <SaleModal
+                            number={selectedNumber}
+                            onClose={() => setSelectedNumber(null)}
+                            onSave={handleSale}
+                        />
+                    )}
+                </div>
+            );
+        }
+
+        function SaleModal({ number, onClose, onSave }) {
+            const [formData, setFormData] = useState({
+                comprador_nome: '',
+                comprador_telefone: '',
+                comprador_rede: '',
+                forma_pagamento: 'dinheiro'
+            });
+            const [loading, setLoading] = useState(false);
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                
+                if (!formData.comprador_nome || !formData.comprador_telefone) {
+                    alert('Por favor, preencha nome e telefone do comprador');
+                    return;
+                }
+
+                setLoading(true);
+                await onSave(formData);
+                setLoading(false);
+            };
+
+            const handleChange = (e) => {
+                setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.value
+                });
+            };
+
+            return (
+                <div className="modal-overlay" onClick={onClose}>
+                    <div className="modal" onClick={(e) => e.stopPropagation()}>
+                        <h3>Vender Número {number.numero}</h3>
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-group">
+                                <label>Nome do Comprador</label>
+                                <input
+                                    type="text"
+                                    name="comprador_nome"
+                                    value={formData.comprador_nome}
+                                    onChange={handleChange}
+                                    placeholder="Nome completo"
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Telefone do Comprador</label>
+                                <input
+                                    type="tel"
+                                    name="comprador_telefone"
+                                    value={formData.comprador_telefone}
+                                    onChange={handleChange}
+                                    placeholder="(00) 00000-0000"
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Rede Social (Opcional)</label>
+                                <input
+                                    type="text"
+                                    name="comprador_rede"
+                                    value={formData.comprador_rede}
+                                    onChange={handleChange}
+                                    placeholder="Instagram, WhatsApp, etc."
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Forma de Pagamento</label>
+                                <select
+                                    name="forma_pagamento"
+                                    value={formData.forma_pagamento}
+                                    onChange={handleChange}
+                                >
+                                    <option value="dinheiro">Dinheiro</option>
+                                    <option value="cartao">Cartão</option>
+                                    <option value="pix">Pix</option>
+                                </select>
+                            </div>
+                            <div className="modal-buttons">
+                                <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                    onClick={onClose}
+                                    disabled={loading}
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="btn"
+                                    disabled={loading}
+                                >
+                                    {loading ? 'Vendendo...' : 'Confirmar Venda'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            );
+        }
+
+        function MySales({ user }) {
+            const [sales, setSales] = useState([]);
+            const [loading, setLoading] = useState(true);
+            const [error, setError] = useState('');
+
+            useEffect(() => {
+                loadSales();
+            }, [user.id]);
+
+            const loadSales = async () => {
+                try {
+                    const data = await getSalesBySeller(user.id);
+                    setSales(data);
+                } catch (err) {
+                    setError('Erro ao carregar vendas');
+                    console.error(err);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            if (loading) {
+                return <div className="loading">Carregando vendas</div>;
+            }
+
+            if (error) {
+                return <div className="error">{error}</div>;
+            }
+
+            if (sales.length === 0) {
+                return (
+                    <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--gray)' }}>
+                        Você ainda não fez nenhuma venda
+                    </div>
+                );
+            }
+
+            return (
+                <div>
+                    <div className="stats-bar">
+                        <div className="stat-card">
+                            <div className="number">{sales.length}</div>
+                            <div className="label">Total de Vendas</div>
+                        </div>
+                    </div>
+
+                    <div className="sales-list">
+                        {sales.map(sale => (
+                            <div key={sale.id} className="sale-card">
+                                <div className="sale-header">
+                                    <div className="sale-number">Nº {sale.numbers.numero}</div>
+                                    <div className="sale-date">
+                                        {new Date(sale.data_hora).toLocaleString('pt-BR')}
+                                    </div>
+                                </div>
+                                <div className="sale-details">
+                                    <div className="sale-detail">
+                                        <strong>Comprador:</strong>
+                                        <span>{sale.comprador_nome}</span>
+                                    </div>
+                                    <div className="sale-detail">
+                                        <strong>Telefone:</strong>
+                                        <span>{sale.comprador_telefone}</span>
+                                    </div>
+                                    {sale.comprador_rede && (
+                                        <div className="sale-detail">
+                                            <strong>Rede Social:</strong>
+                                            <span>{sale.comprador_rede}</span>
+                                        </div>
+                                    )}
+                                    <div className="sale-detail">
+                                        <strong>Pagamento:</strong>
+                                        <span style={{ textTransform: 'capitalize' }}>
+                                            {sale.forma_pagamento}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        function GeneralReport() {
+            const [report, setReport] = useState([]);
+            const [allSales, setAllSales] = useState([]);
+            const [loading, setLoading] = useState(true);
+            const [error, setError] = useState('');
+
+            useEffect(() => {
+                loadReport();
+            }, []);
+
+            const loadReport = async () => {
+                try {
+                    const [reportData, salesData] = await Promise.all([
+                        getSalesReport(),
+                        getAllSales()
+                    ]);
+                    setReport(reportData);
+                    setAllSales(salesData);
+                } catch (err) {
+                    setError('Erro ao carregar relatório');
+                    console.error(err);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            if (loading) {
+                return <div className="loading">Carregando relatório</div>;
+            }
+
+            if (error) {
+                return <div className="error">{error}</div>;
+            }
+
+            const totalVendas = allSales.length;
+
+            return (
+                <div>
+                    <div className="stats-bar">
+                        <div className="stat-card">
+                            <div className="number">{totalVendas}</div>
+                            <div className="label">Total Vendido</div>
+                        </div>
+                        <div className="stat-card">
+                            <div className="number">{report.length}</div>
+                            <div className="label">Vendedores</div>
+                        </div>
+                    </div>
+
+                    <h3 style={{ marginTop: '2rem', marginBottom: '1rem', fontFamily: 'Space Mono, monospace' }}>
+                        VENDAS POR VENDEDOR
+                    </h3>
+                    
+                    <table className="report-table">
+                        <thead>
+                            <tr>
+                                <th>Vendedor</th>
+                                <th>Telefone</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {report
+                                .sort((a, b) => b.total - a.total)
+                                .map((item, index) => (
+                                    <tr key={index}>
+                                        <td>{item.nome}</td>
+                                        <td>{item.telefone}</td>
+                                        <td style={{ fontWeight: 'bold' }}>{item.total}</td>
+                                    </tr>
+                                ))}
+                        </tbody>
+                    </table>
+
+                    <h3 style={{ marginTop: '2rem', marginBottom: '1rem', fontFamily: 'Space Mono, monospace' }}>
+                        TODAS AS VENDAS
+                    </h3>
+
+                    <div className="sales-list">
+                        {allSales.map(sale => (
+                            <div key={sale.id} className="sale-card">
+                                <div className="sale-header">
+                                    <div className="sale-number">Nº {sale.numbers.numero}</div>
+                                    <div className="sale-date">
+                                        {new Date(sale.data_hora).toLocaleString('pt-BR')}
+                                    </div>
+                                </div>
+                                <div className="sale-details">
+                                    <div className="sale-detail">
+                                        <strong>Vendedor:</strong>
+                                        <span>{sale.users.nome}</span>
+                                    </div>
+                                    <div className="sale-detail">
+                                        <strong>Comprador:</strong>
+                                        <span>{sale.comprador_nome}</span>
+                                    </div>
+                                    <div className="sale-detail">
+                                        <strong>Telefone:</strong>
+                                        <span>{sale.comprador_telefone}</span>
+                                    </div>
+                                    <div className="sale-detail">
+                                        <strong>Pagamento:</strong>
+                                        <span style={{ textTransform: 'capitalize' }}>
+                                            {sale.forma_pagamento}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        // Render App
+        ReactDOM.render(<App />, document.getElementById('root'));
+
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('data:text/javascript;base64,' + btoa(`
+                    const CACHE_NAME = 'agape-raffle-v1';
+                    const urlsToCache = ['/'];
+
+                    self.addEventListener('install', event => {
+                        event.waitUntil(
+                            caches.open(CACHE_NAME)
+                                .then(cache => cache.addAll(urlsToCache))
+                        );
+                    });
+
+                    self.addEventListener('fetch', event => {
+                        event.respondWith(
+                            caches.match(event.request)
+                                .then(response => response || fetch(event.request))
+                        );
+                    });
+                `)).catch(err => console.log('Service Worker registration failed:', err));
+            });
+        }
+    </script>
+</body>
+</html>
