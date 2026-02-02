@@ -1066,13 +1066,13 @@
                                 />
                             </div>
                             <div className="form-group">
-                                <label>Rede(cor)</label>
+                                <label>Rede Social (Opcional)</label>
                                 <input
                                     type="text"
                                     name="comprador_rede"
                                     value={formData.comprador_rede}
                                     onChange={handleChange}
-                                    placeholder="Ex: Vermelho, Azul, Verde"
+                                    placeholder="Instagram, WhatsApp, etc."
                                 />
                             </div>
                             <div className="form-group">
@@ -1176,7 +1176,7 @@
                                     </div>
                                     {sale.comprador_rede && (
                                         <div className="sale-detail">
-                                            <strong>Rede(cor):</strong>
+                                            <strong>Rede Social:</strong>
                                             <span>{sale.comprador_rede}</span>
                                         </div>
                                     )}
